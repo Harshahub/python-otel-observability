@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-flask-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+      annotations:
+        # CRITICAL: This annotation triggers the OTel Operator to inject auto-instrumentation
+        instrumentation.opentelemetry.io/inject-python: "true"
+    spec:
+      containers:
+      - name: flask-container
+        image: flask-product-app:v1
+        imagePullPolicy: Never # Forces Kubernetes to use the local image we build in Minikube
+        ports:
+        - containerPort: 5000
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: "python-catalog-service" # This name shows up in the Jaeger UI dropdown

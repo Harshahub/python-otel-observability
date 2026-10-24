@@ -1,14 +1,23 @@
+
+from flask import Flask
 import time
 import random
-from flask import Flask
 
 app = Flask(__name__)
 
-@app.get("/")
-def get_products():
-    # Simulate API processing delay for tracing visibility
-    time.sleep(random.uniform(0.02, 0.08))
-    return "Get All Products"
+@app.route("/")
+def home():
+    time.sleep(random.uniform(0.1, 0.5))
+    return "Hello! My Python application is running."
+
+@app.route("/products")
+def products():
+    time.sleep(random.uniform(0.1, 0.5))
+    return {"products": ["Laptop", "Mobile", "Keyboard"]}
+
+@app.route("/health")
+def health():
+    return {"status": "UP"}
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host="0.0.0.0", port=5000)
